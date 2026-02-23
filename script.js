@@ -1,26 +1,35 @@
-
+// empty array 
 let interviewList =[];
 let rejectList =[];
 
-
+// top count dorar jonno 
 let total = document.getElementById("total-count");
 let interview = document.getElementById("interview-count");
 let reject = document.getElementById("reject-count");
 
-const allCards = document.getElementById("all-card");
-const mainContainer =document.getElementById("containet");
+// all card dorar jonno 
+let allCards = document.getElementById("all-card");
 
+// main container dorar jonno 
+const containerMain =document.querySelector('main')
+
+// faka section creat kore dorar jonno 
+const filterSection =document.getElementById("filter-section");
+
+// poriman korar jonno kaj kore 
 function calculateCount (){
     total.innerText = allCards.children.length ;
     interview.innerText = interviewList.length;
     reject.innerText = rejectList.length ;
 }
+// function call korar jonno 
 calculateCount()
-
+// top btn dorat jonno 
 const allFilter = document.getElementById("all-btn");
 const interviewFilter = document.getElementById("interview-btn");
 const rejectFilter = document.getElementById("reject-btn");
-const filterSection =document.getElementById("filter-section");
+
+// toggle er madome color add & remove korar jonno 
 
 function toggleStyle(id){
  allFilter.classList.add('bg-black-300','text-white')
@@ -31,77 +40,71 @@ function toggleStyle(id){
  interviewFilter.classList.remove('bg-black','text-white')
  rejectFilter.classList.remove('bg-black','text-white')
 
-
-
  const selected = document.getElementById(id)
+//  let currentStatus = "all"
 currentStatus = id
 
  selected.classList.remove('bg-gray-300', 'text-black')
     selected.classList.add('bg-black', 'text-white')
 }
-mainContainer.addEventListener('click', function(event){
 
-console.log((event.target.classList.contains('appliteName')));
+containerMain.addEventListener('click', function (event) {
+    if (event.target.classList.contains('jobInterviewBtn')) {
+const parendNode = event.target.closest("#card")   
 
-  if(event.target.classList.contains('appliteName')){
+        const  companiName = parendNode.querySelector('.companiName').innerText
+        const  remoteSalary = parendNode.querySelector('.remoteSalary').innerText
+        const descriptionName = parendNode.querySelector('.descriptionName').innerText
+        const appliedName= parendNode.querySelector('.appliteName').innerText;
 
-      const parentNodeName = event.target.parentNode.parentNode;
+        const cardInfo = {
+             companiName,
+           remoteSalary,
+             appliteName :'Applied',
+            descriptionName
+        }
 
-    const companiName = parentNodeName.querySelector('.companyName').innerText;
-    const remoteSalary =parentNodeName.querySelector('.remoteSalary').innerText;
-    const appliteName = parentNodeName.querySelector('.appliteName').innerText;
-    const descriptionName = parentNodeName.querySelector('.descriptionName').innerText;
+        const InterviewE = interviewList.find(item => item.companiName == cardInfo.companiName)
+parendNode.querySelector('.appliteName').innerText = 'Applied'
 
-    // console.log(companiName,remoteSalary,appliteName,descriptionName);
+        if (!InterviewE) {
+            interviewList.push(cardInfo)
+        }
+        renderApplied()
+        calculateCount()
+    }})
 
-    const cardData ={
-        companiName,
-        remoteSalary,
-        appliteName,
-        descriptionName
-    }
-const interviewExit = interviewList.find(item=>item.companiName == cardData.companiName)
+function renderApplied(){
+filterSection.innerHTML ='' 
 
-if(!interviewExit){
-    interviewList.push(cardData)
-}
-  }
-  renderInterview ()
-})
+for(let applied of interviewList){
+    console.log(applied);
+    let divCreate = document.createElement('div')
+   divCreate.className = 'mb-5 rounded-2xl p-8 flex justify-between bg-amber-100'
 
-function renderInterview (){
-    filterSection.innerHTML = '' ;
+   divCreate.innerHTML = `
+<div class="space-y-6">
+    <div>
+        <h2 class="companiName text-2xl text-[#033972]">
+            ${applied.companiName}
+        </h2>
+    </div>
 
-    for(let interview of interviewList){
-       
-        let div =document.createElement('div');
-        div.className = 'class="mb-5 rounded-2xl p-8 flex justify-between  bg-amber-100"';
-        div.innerHTML = `
-        
-         <div class="space-y-6">
-        <div>
-            <h2  class="companyName text-2xl text-[#033972]">Mobile First Corp</h2>
-        <p class="postName text-gray-500">React Native Developer</p>
-        </div>
-        <div >
-            <p class="remoteSalary text-gray-500">Remote .  • 
-Full-time . •
- $130,000 - $175,000</p>
-        </div>
-        <div class="space-y-1">
-             <p id="applied" class="appliteName w-[13%] rounded bg-gray-300 font-semibold py-3 text-[#033972] px-2">Not Applied</p>
-             <p class="descriptionName">Build cross-platform mobile applications using React Native. Work on products used by millions of users worldwide.</p>
-        </div>
-        <div>
-            <button id="job-interview-btn" class="btn btn-neutral soft btn-outline">Interview</button>
-            <button id="job-reject-btn" class="btn btn-neutral btn-outline" > Rejected</button>
-        </div>
-       </div>
-        <div>
-            <button class="btn btn-error">Delet</button>
-        </div>
-        `
-    }
+    <p class="remoteSalary text-gray-500">
+        ${applied.remoteSalary}
+    </p>
+
+    <p class="appliteName bg-green-300 px-2 py-1 rounded">
+        Applied
+    </p>
+
+    <p class="descriptionName">
+        ${applied.descriptionName}
+    </p>
+</div>
+`
+   filterSection.appendChild(divCreate)
 }
 
-
+}
+renderApplied()
