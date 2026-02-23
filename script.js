@@ -32,25 +32,21 @@ const rejectFilter = document.getElementById("reject-btn");
 // toggle er madome color add & remove korar jonno 
 
 function toggleStyle(id){
- allFilter.classList.add('bg-black-300','text-white')
- interviewFilter.classList.add('bg-black-300','text-white')
- rejectFilter.classList.add('bg-black-300','text-white')
+    allFilter.classList.remove('bg-black','text-white')
+    interviewFilter.classList.remove('bg-black','text-white')
+    rejectFilter.classList.remove('bg-black','text-white')
 
- allFilter.classList.remove('bg-black','text-white')
- interviewFilter.classList.remove('bg-black','text-white')
- rejectFilter.classList.remove('bg-black','text-white')
-
- const selected = document.getElementById(id)
-//  let currentStatus = "all"
-currentStatus = id
-
- selected.classList.remove('bg-gray-300', 'text-black')
-    selected.classList.add('bg-black', 'text-white')
+    const selected = document.getElementById(id)
+    selected.classList.remove('bg-gray-700','text-white')
+    selected.classList.add('bg-gray-700','text-white')
 }
+
+//  selected.classList.remove('bg-gray-300', 'text-black')
+ 
 
 containerMain.addEventListener('click', function (event) {
     if (event.target.classList.contains('jobInterviewBtn')) {
-const parendNode = event.target.closest("#card")   
+const parendNode = event.target.closest(".card-item")   
 
         const  companiName = parendNode.querySelector('.companiName').innerText
         const  remoteSalary = parendNode.querySelector('.remoteSalary').innerText
@@ -82,27 +78,17 @@ for(let applied of interviewList){
     let divCreate = document.createElement('div')
    divCreate.className = 'mb-5 rounded-2xl p-8 flex justify-between bg-amber-100'
 
-   divCreate.innerHTML = `
+divCreate.innerHTML = `
 <div class="space-y-6">
     <div>
-        <h2 class="companiName text-2xl text-[#033972]">
-            ${applied.companiName}
-        </h2>
+        <h2 class="companiName text-2xl text-[#033972]">${applied.companiName}</h2>
     </div>
-
-    <p class="remoteSalary text-gray-500">
-        ${applied.remoteSalary}
-    </p>
-
-    <p class="appliteName bg-green-300 px-2 py-1 rounded">
-        Applied
-    </p>
-
-    <p class="descriptionName">
-        ${applied.descriptionName}
-    </p>
+    <p class="remoteSalary text-gray-500">${applied.remoteSalary}</p>
+    <p class="appliteName bg-green-300 px-2 py-1 rounded">Applied</p>
+    <p class="descriptionName">${applied.descriptionName}</p>
 </div>
 `
+
    filterSection.appendChild(divCreate)
 }
 
