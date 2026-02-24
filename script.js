@@ -3,6 +3,7 @@ let interviewList =[];
 let rejectList =[];
 let curent = 'all'
 
+let deletBtnC=document.querySelectorAll('.deleteBtn')
 // top count dorar jonno 
 let total = document.getElementById("total-count");
 let interview = document.getElementById("interview-count");
@@ -32,46 +33,54 @@ const rejectFilter = document.getElementById("reject-btn");
 
 // toggle er madome color add & remove korar jonno 
 
+// function toggleStyle(id){
 function toggleStyle(id){
+    curent = id;  
+
     allFilter.classList.remove('bg-black','text-white')
     interviewFilter.classList.remove('bg-black','text-white')
     rejectFilter.classList.remove('bg-black','text-white')
 
-    allFilter.classList.add('bg-gray-300','text-black')
-    interviewFilter.classList.add('bg-gray-300','text-black')
-    rejectFilter.classList.add('bg-gray-300','text-black')
+    allFilter.classList.add('bg-gray-200','text-black')
+    interviewFilter.classList.add('bg-gray-200','text-black')
+    rejectFilter.classList.add('bg-gray-200','text-black')
 
-    const selected = document.getElementById(id)
-    selected.classList.remove('bg-gray-300','text-black')
+    const selected = document.getElementById(curent)
+    selected.classList.remove('bg-gray-200','text-black')
     selected.classList.add('bg-black','text-white')
     
-    if(id == 'interview-btn'){
+    if(curent == 'interview-btn'){
         allCards.classList.add('hidden')
         filterSection.classList.remove('hidden')
             renderApplied()
 
-    }else if(id == 'all-btn'){
+    }else if(curent == 'all-btn'){
        allCards.classList.remove('hidden')
         filterSection.classList.add('hidden')
-    }else if(id == 'reject-btn'){
+    }else if(curent == 'reject-btn'){
        allCards.classList.add('hidden')
         filterSection.classList.remove('hidden')
             renderReject()
     }
 
-allFilter.addEventListener("click", () => {
-    toggleStyle("all-btn")
-})
 
-interviewFilter.addEventListener("click", () => {
-    toggleStyle("interview-btn")
-    renderApplied()
-})
+    allFilter.addEventListener("click", () => toggleStyle("all-btn"))
+interviewFilter.addEventListener("click", () => toggleStyle("interview-btn"))
+rejectFilter.addEventListener("click", () => toggleStyle("reject-btn"))
 
-rejectFilter.addEventListener("click", () => {
-    toggleStyle("reject-btn")
-    renderReject()
-})
+// allFilter.addEventListener("click", () => {
+//     toggleStyle("all-btn")
+// })
+
+// interviewFilter.addEventListener("click", () => {
+//     toggleStyle("interview-btn")
+//     renderApplied()
+// })
+
+// rejectFilter.addEventListener("click", () => {
+//     toggleStyle("reject-btn")
+//     renderReject()
+// })
 }
 
 //  Applied Interview part 
@@ -115,15 +124,15 @@ filterSection.innerHTML =''
 for(let applied of interviewList){
     // console.log(applied);
     let divCreate = document.createElement('div')
-   divCreate.className = 'mb-5 rounded-2xl p-8 flex justify-between bg-amber-100'
+   divCreate.className = 'mb-5 rounded-2xl p-8 flex justify-between bg-amber-50'
 
 divCreate.innerHTML = `
 <div class="space-y-6">
     <div>
         <h2 class="companiName text-2xl text-[#033972]">${applied.companiName}</h2>
     </div>
-    <p class="remoteSalary text-gray-500">${applied.remoteSalary}</p>
-        <p class="appliteName w-[13%] bg-green-400 px-2 py-1 rounded">${applied.appliteName}</p>
+    <p class="remoteSalary text-gray-300">${applied.remoteSalary}</p>
+        <p class="appliteName btn btn-primary px-2 py-1 rounded">${applied.appliteName}</p>
     <p class="descriptionName">${applied.descriptionName}</p>
 
       <div>
@@ -182,15 +191,15 @@ filterSection.innerHTML =''
 for(let reject of rejectList){
     console.log(reject);
     let divCreate = document.createElement('div')
-   divCreate.className = 'mb-5 rounded-2xl p-8 flex justify-between bg-amber-100'
+   divCreate.className = 'mb-5 rounded-2xl p-8 flex justify-between bg-amber-50'
 
 divCreate.innerHTML = `
 <div class="space-y-6">
     <div>
         <h2 class="companiName text-2xl text-[#033972]">${reject.companiName}</h2>
     </div>
-    <p class="remoteSalary text-gray-500">${reject.remoteSalary}</p>
-    <p class="appliteName w-[13%] bg-red-300 px-2 py-1 rounded">Reject</p>
+    <p class="remoteSalary text-gray-300">${reject.remoteSalary}</p>
+    <p class="appliteName btn btn-error px-2 py-1 rounded">Reject</p>
     <p class="descriptionName">${reject.descriptionName}</p>
 
        <div>
@@ -209,3 +218,28 @@ divCreate.innerHTML = `
 
 }
 renderReject()
+
+
+// delet part 
+
+containerMain.addEventListener('click', function (event) {
+
+    if (event.target.classList.contains('deleteBtn')) {
+
+        const card = event.target.closest('.card-item');
+        const companyName = card.querySelector('.companiName').innerText;
+
+        card.remove();
+
+        interviewList = interviewList.filter(item => item.companiName !== companyName);
+
+        rejectList = rejectList.filter(item => item.companiName !== companyName);
+
+        calculateCount();
+
+        if (curent === "interview-btn") renderApplied();
+        if (curent === "reject-btn") renderReject();
+    }
+
+});
+
