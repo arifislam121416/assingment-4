@@ -1,245 +1,101 @@
-// empty array 
-let interviewList =[];
-let rejectList =[];
-let curent = 'all'
+let curentTab = "all";
+const tabActive =["bg-gray-800","text-white"];
+const tabInactive =["bg-gray-200","text-black"];
 
-let deletBtnC=document.querySelectorAll('.deleteBtn')
-// top count dorar jonno 
-let total = document.getElementById("total-count");
-let interview = document.getElementById("interview-count");
-let reject = document.getElementById("reject-count");
+const allContainer = document.getElementById("all-container");
+const interviewContainer = document.getElementById("interview-container");
+const rejectContainer = document.getElementById("reject-container");
 
-// all card dorar jonno 
-let allCards = document.getElementById("all-card");
+const totalStat = document.getElementById("stat-total");
+const interviewStat = document.getElementById("stat-interview");
+const rejectStat = document.getElementById("stat-reject");
 
-// main container dorar jonno 
-const containerMain =document.querySelector('main')
+const availebleStat =document.getElementById("availableStat")
 
-// faka section creat kore dorar jonno 
-const filterSection =document.getElementById("filter-section");
+const emptyStat =document.getElementById("emptyStat")
 
-// poriman korar jonno kaj kore 
-function calculateCount (){
-    total.innerText = allCards.children.length ;
-    interview.innerText = interviewList.length;
-    reject.innerText = rejectList.length ;
-}
-// function call korar jonno 
-calculateCount()
-// top btn dorat jonno 
-const allFilter = document.getElementById("all-btn");
-const interviewFilter = document.getElementById("interview-btn");
-const rejectFilter = document.getElementById("reject-btn");
-
-// toggle er madome color add & remove korar jonno 
-
-// function toggleStyle(id){
-function toggleStyle(id){
-    curent = id;  
-
-    allFilter.classList.remove('bg-black','text-white')
-    interviewFilter.classList.remove('bg-black','text-white')
-    rejectFilter.classList.remove('bg-black','text-white')
-
-    allFilter.classList.add('bg-gray-200','text-black')
-    interviewFilter.classList.add('bg-gray-200','text-black')
-    rejectFilter.classList.add('bg-gray-200','text-black')
-
-    const selected = document.getElementById(curent)
-    selected.classList.remove('bg-gray-200','text-black')
-    selected.classList.add('bg-black','text-white')
+function updateStatus(){
     
-    if(curent == 'interview-btn'){
-        allCards.classList.add('hidden')
-        filterSection.classList.remove('hidden')
-            renderApplied()
+    const counts ={
+        all:allContainer.children.length,
+        interview :interviewContainer.children.length,
+        rejected:rejectContainer.children.length,
+    }
+    totalStat.innerText = counts.all;
+    interviewStat.innerText = counts.interview;
+    rejectStat.innerText =counts.rejected;
+availebleStat.innerText =counts[curentTab];
 
-    }else if(curent == 'all-btn'){
-       allCards.classList.remove('hidden')
-        filterSection.classList.add('hidden')
-    }else if(curent == 'reject-btn'){
-       allCards.classList.add('hidden')
-        filterSection.classList.remove('hidden')
-            renderReject()
+if(counts[curentTab] < 1){
+    emptyStat.classList.remove("hidden")
+}else{
+    emptyStat.classList.add("hidden")
+}
+
+}
+updateStatus()
+
+function switchTab(tab){
+    const tabs = ["all","interview", "rejected"];
+    curentTab = tab;
+
+    for (const t of tabs) {
+        const tabName = document.getElementById("tab-" + t);
+       if(t===tab){
+        tabName.classList.remove(...tabInactive);
+        tabName.classList.add(...tabActive)
+       }else{
+        tabName.classList.remove(...tabActive);
+        tabName.classList.add(...tabInactive)
+       }
     }
 
-
-    allFilter.addEventListener("click", () => toggleStyle("all-btn"))
-interviewFilter.addEventListener("click", () => toggleStyle("interview-btn"))
-rejectFilter.addEventListener("click", () => toggleStyle("reject-btn"))
-
-// allFilter.addEventListener("click", () => {
-//     toggleStyle("all-btn")
-// })
-
-// interviewFilter.addEventListener("click", () => {
-//     toggleStyle("interview-btn")
-//     renderApplied()
-// })
-
-// rejectFilter.addEventListener("click", () => {
-//     toggleStyle("reject-btn")
-//     renderReject()
-// })
-}
-
-//  Applied Interview part 
-
-containerMain.addEventListener('click', function (event) {
-    if (event.target.classList.contains('jobInterviewBtn')) {
-const parendNode = event.target.closest(".card-item")   
-
-        const  companiName = parendNode.querySelector('.companiName').innerText
-        const  remoteSalary = parendNode.querySelector('.remoteSalary').innerText
-        const descriptionName = parendNode.querySelector('.descriptionName').innerText
-        const appliedName= parendNode.querySelector('.appliteName').innerText;
-
-        parendNode.querySelector('.appliteName').innerText = 'Applied'
-
-        const cardInfo = {
-             companiName,
-           remoteSalary,
-             appliteName :'Applied',
-            descriptionName
-        }
-                const InterviewE = interviewList.find(item => item.companiName == cardInfo.companiName)
-
-
-        if (!InterviewE) {
-            interviewList.push(cardInfo)
-        }
-
-
-        if(curent == "interview-btn"){
-         renderApplied()
-        }
-
-        
-        calculateCount()
-    }})
-
-function renderApplied(){
-filterSection.innerHTML ='' 
-
-for(let applied of interviewList){
-    // console.log(applied);
-    let divCreate = document.createElement('div')
-   divCreate.className = 'mb-5 rounded-2xl p-8 flex justify-between bg-amber-50'
-
-divCreate.innerHTML = `
-<div class="space-y-6">
-    <div>
-        <h2 class="companiName text-2xl text-[#033972]">${applied.companiName}</h2>
-    </div>
-    <p class="remoteSalary text-gray-300">${applied.remoteSalary}</p>
-        <p class="appliteName btn btn-primary px-2 py-1 rounded">${applied.appliteName}</p>
-    <p class="descriptionName">${applied.descriptionName}</p>
-
-      <div>
-            <button  class="jobInterviewBtn btn btn-neutral soft btn-outline">Interview</button>
-            <button  class="jobRejectBtn btn btn-neutral btn-outline">Rejected</button>
-        </div>
-       </div>
-        <div>
-            <button class="btn btn-error">Delet</button>
-        </div>
-</div>
-
-
-`
-
-   filterSection.appendChild(divCreate)
-}
-
-}
-renderApplied()
-  
-// Reject part 
-
-containerMain.addEventListener('click', function (event) {
-    if (event.target.classList.contains('jobRejectBtn')) {
-const parendNode = event.target.closest(".card-item")   
-
-        const  companiName = parendNode.querySelector('.companiName').innerText
-        const  remoteSalary = parendNode.querySelector('.remoteSalary').innerText
-        const descriptionName = parendNode.querySelector('.descriptionName').innerText
-        const appliedName= parendNode.querySelector('.appliteName').innerText;
-
-        const cardInfo = {
-             companiName,
-           remoteSalary,
-             appliteName :'Reject',
-            descriptionName
-        }
-
-        const rejectE = rejectList.find(item => item.companiName == cardInfo.companiName)
-parendNode.querySelector('.appliteName').innerText = 'Reject'
-
-        if (!rejectE) {
-            rejectList.push(cardInfo)
-        }
-         if(curent == "reject-btn"){
-         renderReject()
-        }
-        calculateCount()
-        
-    }})
-
-function renderReject(){
-filterSection.innerHTML ='' 
-
-for(let reject of rejectList){
-    console.log(reject);
-    let divCreate = document.createElement('div')
-   divCreate.className = 'mb-5 rounded-2xl p-8 flex justify-between bg-amber-50'
-
-divCreate.innerHTML = `
-<div class="space-y-6">
-    <div>
-        <h2 class="companiName text-2xl text-[#033972]">${reject.companiName}</h2>
-    </div>
-    <p class="remoteSalary text-gray-300">${reject.remoteSalary}</p>
-    <p class="appliteName btn btn-error px-2 py-1 rounded">Reject</p>
-    <p class="descriptionName">${reject.descriptionName}</p>
-
-       <div>
-            <button  class="jobInterviewBtn btn btn-neutral soft btn-outline">Interview</button>
-            <button  class="jobRejectBtn btn btn-neutral btn-outline">Rejected</button>
-        </div>
-       </div>
-        <div>
-            <button class="btn btn-error">Delet</button>
-        </div>
-</div>
-`
-
-   filterSection.appendChild(divCreate)
-}
-
-}
-renderReject()
-
-
-// delet part 
-
-containerMain.addEventListener('click', function (event) {
-
-    if (event.target.classList.contains('deleteBtn')) {
-
-        const card = event.target.closest('.card-item');
-        const companyName = card.querySelector('.companiName').innerText;
-
-        card.remove();
-
-        interviewList = interviewList.filter(item => item.companiName !== companyName);
-
-        rejectList = rejectList.filter(item => item.companiName !== companyName);
-
-        calculateCount();
-
-        if (curent === "interview-btn") renderApplied();
-        if (curent === "reject-btn") renderReject();
+    const pages =[allContainer,interviewContainer,rejectContainer];
+    for (const element of pages) {
+        element.classList.add("hidden");
+    
     }
 
-});
+    emptyStat.classList.add("hidden")
 
+    if(tab === "all"){
+        allContainer.classList.remove("hidden");
+        if(allContainer.children.length < 1){
+            emptyStat.classList.remove("hidden")
+        }
+    }else if(tab === "interview"){
+        interviewContainer.classList.remove("hidden");
+         if(interviewContainer.children.length < 1){
+            emptyStat.classList.remove("hidden")
+        }
+    }else{
+        rejectContainer.classList.remove("hidden");
+         if(rejectContainer.children.length < 1){
+            emptyStat.classList.remove("hidden")
+        }
+    }
+    updateStatus()
+}
+
+document.getElementById("job-container").addEventListener("click",function(event){
+    const clickElement = event.target;
+    const cards = clickElement.closest(".cards");
+    const parent =cards.parentNode;
+    const status = cards.querySelector(".statuss");
+
+    if(clickElement.classList.contains("interview")){
+        status.innerText ="Interview";
+        interviewContainer.appendChild(cards)
+        updateStatus()
+    }
+    if(clickElement.classList.contains("reject")){
+        status.innerText ="Rejected";
+ rejectContainer.appendChild(cards)
+ updateStatus()
+    }
+    if(clickElement.classList.contains("delete")){
+parent.removeChild(cards)
+updateStatus()
+    }
+})
+switchTab(curentTab)
